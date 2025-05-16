@@ -2,10 +2,8 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-auth-layout',
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
+  templateUrl: './auth-layout.component.html',
 })
-export class AppComponent {
-  title = 'ams';
-}
+export class AuthLayoutComponent {}

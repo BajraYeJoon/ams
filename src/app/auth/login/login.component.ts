@@ -6,14 +6,24 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { provideHttpClient } from '@angular/common/http';
+import { CommonInputComponent } from '../../ui/common-input.component';
+import { CommonButtonComponent } from '../../ui/common-button.component';
+import { CommonErrorMessageComponent } from '../../components/error-mesage.component';
+import { CookieService } from 'ngx-cookie-service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    CommonInputComponent,
+    CommonButtonComponent,
+    CommonErrorMessageComponent,
+  ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -21,24 +31,44 @@ export class LoginComponent {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly cookieService: CookieService,
+    private readonly router: Router
   ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
+      email: [
+        '',
+        [Validators.required, Validators.email, Validators.maxLength(64)],
+      ],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(32),
+        ],
+      ],
     });
   }
 
   onSubmit() {
     if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      this.authService.login(username, password).subscribe({
+      const { email, password } = this.loginForm.value;
+      this.authService.login(email, password).subscribe({
         next: (res) => {
           //store the access and refresh tokens in cookies
-          document.cookie = `accessToken=${res.data.accessToken}; path=/;`;
-          document.cookie = `refreshToken=${res.data.refreshToken}; path=/;`;
+          // document.cookie = `accessToken=${res.data.accessToken}; path=/;`;
+          // document.cookie = `refreshToken=${res.data.refreshToken}; path=/;`;
+          this.cookieService.set('accessToken', res.data.accessToken, {
+            path: '/',
+          });
+          this.cookieService.set('refreshToken', res.data.refreshToken, {
+            path: '/',
+          });
           this.error = null;
+          this.router.navigate(['/dashboard']);
         },
+
         error: (err) => {
           // Try to extract API error structure
           const apiError = err?.error;

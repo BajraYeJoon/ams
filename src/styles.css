@@ -1,1 +1,44 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+/* @plugin "tailwindcss-primeui"; */
+
+@theme {
+    --color-primary: #6351d8;
+    --color-primary-foreground: #fff;
+    --color-secondary: #282538;
+    --color-secondary-foreground: #fff;
+    --color-accent: #6351d8;
+    --color-accent-foreground: #fff;
+    --color-muted: #e5e7eb;
+    --color-muted-foreground: #6b7280;
+    --color-background: #f8fafc;
+    --color-border: #e2e8f0;
+    --color-input: #fff;
+    --color-ring: #6351d8;
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #fff;
+    --color-dark-background: #2C2638;
+}
+
+@layer components {
+    .btn-primary {
+        @apply bg-(--color-primary) text-(--color-primary-foreground) w-full rounded-md px-4 py-2 font-semibold shadow hover:bg-indigo-600 transition;
+    }
+
+    .input {
+        @apply bg-(--color-input) border border-(--color-border) rounded-md px-3 py-2 text-(--color-muted-foreground) focus:outline-none focus:ring-2 focus:ring-(--color-ring) transition;
+    }
+
+   
+}
+
+@layer base {
+    *{
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body{
+        @apply bg-(--color-dark-background);
+    }
+}
